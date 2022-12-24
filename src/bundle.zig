@@ -32,7 +32,6 @@ pub fn init(contents: []const u8, allocator: std.mem.Allocator) !Self {
         // exists in our content buffe
         try r.skipBytes(name_len, .{});
         var path = contents[path_start .. path_start + name_len];
-        std.debug.print("path {d} = {s}\n", .{ name_len, path });
         path_start += name_len;
 
         var start_offset = try r.readIntLittle(u32) + start_content;
