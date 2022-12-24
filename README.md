@@ -54,16 +54,14 @@ const assets = @embedFile("my-directory-name.bundle");
   of the data associated with the file.
 
 
-Simple Example :
+Another Simple Example :
 
 ```
 const std = @import("std");
 const bundle = @import("bundle.zig");
 
-const assets = @embedFile("assets.bundle");
-
 pub fn main() !void {
-  var assets_bundle = try bundle.init(assets, std.heap.page_allocator);
+  var assets_bundle = try bundle.init(@embedFile("assets.bundle"), std.heap.page_allocator);
   defer assets_bundle.deinit();
 
   // application context, include a reference to the assets bundle in there
