@@ -47,7 +47,7 @@ In your project, do the following things :
 const assets = @embedFile("my-directory-name.bundle");
 ```
 
-- When you start your program, invoke pass the emebdded assets to the bundle object,
+- When you start your program, pass the emebdded assets to the bundle object,
   and that gives you a virtual filesystem to pull the assets from.
 
 - Call `my_bundle.file(path: []const u8): []const u8` whenever you want to get a slice
@@ -103,6 +103,8 @@ Current version has the following limitations on the bundle :
 
 ## Bundle file format
 
+You dont need to know this to use the library, but its documented here in case you want to extend it, or play around with it.
+
 v1.0 - uncompressed data
 
 ------------ Header ------------
@@ -110,16 +112,21 @@ v1.0 - uncompressed data
 Header: [2]u8  "BZ"
 
 NumEntries: u16 LittleEndian
-StartOffsetContent: u32 LittleEndian
+
+StartOffsetContent: u32 LittleEndian = start offset for all the file contents.  Add this value to each entries start and end offets to get the location in the bundle for the content entry.
 
 ------------ Index -------------
 
 for each entry:
 
 LenFilename: u16 LittleEndian
+
 Fliename: [N]u8  where N = length of the filename
-StartOffset: u32 LittleEndian
-EndOffset: u32 LittleEndian
+
+StartOffset: u32 LittleEndian = start of the file contents
+
+EndOffset: u32 LittleEndian = end of the file contents
+
 
 ------------ Content ----------
 
@@ -128,6 +135,8 @@ for each entry:
 - variable string of bytes making up the Content
 - The index contains the pathname, start offset and end offset 
   to slice the contents out of any file from the total payload
+- Add the header's 'StartOffsetContent' value to the entry's 
+  start/end offset to get the actual offset into the bundle.
 
 
 
