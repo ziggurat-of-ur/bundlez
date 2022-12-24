@@ -5,7 +5,7 @@ const Self = @This();
 allocator: std.mem.Allocator = undefined,
 map: std.StringArrayHashMap([]const u8) = undefined,
 
-pub fn init(contents: []u8, allocator: std.mem.Allocator) !Self {
+pub fn init(contents: []const u8, allocator: std.mem.Allocator) !Self {
     try std.testing.expectStringStartsWith(contents, "BZ");
 
     var self = Self{
