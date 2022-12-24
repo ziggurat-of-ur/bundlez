@@ -106,12 +106,14 @@ Current version has the following limitations on the bundle :
 v1.0 - uncompressed data
 
 ------------ Header ------------
+
 Header: [2]u8  "BZ"
 
 NumEntries: u16 LittleEndian
 StartOffsetContent: u32 LittleEndian
 
 ------------ Index -------------
+
 for each entry:
 
 LenFilename: u16 LittleEndian
@@ -120,6 +122,7 @@ StartOffset: u32 LittleEndian
 EndOffset: u32 LittleEndian
 
 ------------ Content ----------
+
 for each entry:
 
 - variable string of bytes making up the Content
