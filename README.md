@@ -19,7 +19,7 @@ Problems with this :
 
 ## Solution
 
-Bundle the whole assets directory into your Zig app using @embed("all-my-files.bundle")
+Bundle the whole assets directory into your Zig app using @embedFile("all-my-files.bundle")
 
 Then at runtime, expand the bundle into a map[string]string
 
@@ -42,9 +42,9 @@ In your project, do the following things :
 - Either submodule this project, or just simply copy `src/bundle.zig` into your project
   and reference it from there.
 
-- In your code, @embed the bundle into your runtime 
+- In your code, @embedFile the bundle into your runtime 
 ```
-const assets = @embed("my-directory-name.bundle");
+const assets = @embedFile("my-directory-name.bundle");
 ```
 
 - When you start your program, invoke pass the emebdded assets to the bundle object,
@@ -60,7 +60,7 @@ Simple Example :
 const std = @import("std");
 const bundle = @import("bundle.zig");
 
-const assets = @embed("assets.bundle");
+const assets = @embedFile("assets.bundle");
 
 pub fn main() !void {
   var assets_bundle = try bundle.init(assets, std.heap.page_allocator);
