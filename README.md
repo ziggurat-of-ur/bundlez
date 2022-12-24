@@ -27,6 +27,60 @@ Then at runtime, expand the bundle into a map[string]string
 
 Currently building with v0.11.dev 
 
+## How to use
+
+Firstly, checkout this project, and build the `bundlez` binary. Copy that binary
+into your path.
+
+
+In your project, do the following things :
+
+- Where you have a directory of assets that you want to make available at runtime,
+  simply run `bundlez my-directory-name` to create a bundle file, which will be 
+  named `my-directory-name.bundle`
+
+- Either submodule this project, or just simply copy `src/bundle.zig` into your project
+  and reference it from there.
+
+- In your code, @embed the bundle into your runtime 
+```
+const assets = @embed("my-directory-name.bundle");
+```
+
+- When you start your program, invoke pass the emebdded assets to the bundle object,
+  and that gives you a virtual filesystem to pull the assets from.
+
+- Call `my_bundle.file(path: []const u8): []const u8` whenever you want to get a slice
+  of the data associated with the file.
+
+
+Simple Example :
+
+```
+const std = @import("std");
+const bundle = @import("bundle.zig");
+
+const assets = @embed("assets.bundle");
+
+pub fn main() !void {
+  var assets_bundle = try bundle.init(assets, std.heap.page_allocator);
+  defer assets_bundle.deinit();
+
+  // application context, include a reference to the assets bundle in there
+  var context = Context.init(assets_bundle, ...);
+
+  // ... do other stuff  
+}
+
+// use the bundle in a handler 
+pub fn MyFileHandler(context: *Context, req: *Request, resp: *Response) !void {
+
+  try resp.write(try context.bundle.file(req.path));
+}
+```
+
+
+
 
 ## Using the CLI Bundler
 
