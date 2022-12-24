@@ -20,15 +20,24 @@ pub fn init(contents: []u8, allocator: std.mem.Allocator) !Self {
     var num_entries = try r.readIntLittle(u16);
     var start_content = try r.readIntLittle(u32);
 
+    try self.map.ensureTotalCapacity(num_entries);
+
     var i: u16 = 0;
+    var path_start: usize = 8;
     while (i < num_entries) : (i += 1) {
         var name_len = try r.readIntLittle(u16);
+        path_start += 2;
 
-        var path = try self.allocator.alloc(u8, name_len);
-        _ = try r.read(path);
+        // dont need to read the key or allocate room for it, since it already
+        // exists in our content buffe
+        try r.skipBytes(name_len, .{});
+        var path = contents[path_start .. path_start + name_len];
+        std.debug.print("path {d} = {s}\n", .{ name_len, path });
+        path_start += name_len;
 
         var start_offset = try r.readIntLittle(u32) + start_content;
         var end_offset = try r.readIntLittle(u32) + start_content;
+        path_start += 8; // advance 8 bytes due to the 2x u32s
 
         try self.map.put(path, contents[start_offset..end_offset]);
     }
@@ -45,9 +54,10 @@ fn readString(in_stream: anytype, allocator: std.mem.Allocator) ![]u8 {
 }
 
 pub fn deinit(self: *Self) void {
-    for (self.map.keys()) |key| {
-        self.allocator.free(key);
-    }
+    // dont need to free the keys, they are part of the content buffer
+    // for (self.map.keys()) |key| {
+    // self.allocator.free(key);
+    // }
     self.map.deinit();
 }
 
