@@ -44,7 +44,7 @@ In your project, do the following things :
 
 - In your code, @embedFile the bundle into your runtime 
 ```
-const assets = @embedFile("my-directory-name.bundle");
+const assets: []const u8 = @embedFile("my-directory-name.bundle");
 ```
 
 - When you start your program, pass the emebdded assets to the bundle object,
@@ -59,9 +59,10 @@ Another Simple Example :
 ```
 const std = @import("std");
 const bundle = @import("bundle.zig");
+const assets_data: []const u8 = @embedFile("assets_bundle");
 
 pub fn main() !void {
-  var assets_bundle = try bundle.init(@embedFile("assets.bundle"), std.heap.page_allocator);
+  var assets_bundle = try bundle.init(assets_data, std.heap.page_allocator);
   defer assets_bundle.deinit();
 
   // application context, include a reference to the assets bundle in there
