@@ -6,7 +6,7 @@ allocator: std.mem.Allocator = undefined,
 map: std.StringArrayHashMap([]const u8) = undefined,
 
 pub fn init(contents: []const u8, allocator: std.mem.Allocator) !Self {
-    try std.testing.expectStringStartsWith(contents, "BZ");
+    try std.testing.expectStringStartsWith(contents[0..2], "BZ");
 
     var self = Self{
         .allocator = allocator,
