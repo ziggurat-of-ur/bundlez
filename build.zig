@@ -1,6 +1,11 @@
 const std = @import("std");
 
 pub fn build(b: *std.build.Builder) void {
+    // expose bundle as a lib
+    _ = b.addModule("bundle", .{
+        .source_file = .{ .path = "src/bundle.zig" },
+    });
+
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
